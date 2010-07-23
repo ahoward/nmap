@@ -1,0 +1,106 @@
+NAME
+
+  nmap (reference ruby class which combines narray and mmap)
+  na_str (c extension)
+
+REQUIREMENTS
+
+  mmap : http://moulon.inra.fr/ruby/mmap.html
+  narray : http://narray.rubyforge.org/
+
+URIS
+
+  http://codeforpeople.com/lib/ruby/nmap/
+
+
+SYNOPSIS
+
+  na_str is designed to allow data sharing between narray object and other ruby
+  objects.  the shared data is that returned by the objects to_s or to_str method
+  and rb_string_new4.  using this technique memory mapped (using guy's mmap
+  extensions) data can be altered with no explicit io on the users part and
+  partial changed to numerical grids can occur very quickly and persistently.
+
+  the nmap.rb reference impl is a concrete example of this usage and is
+  included in the distribution.
+
+
+EXAMPLE USAGE
+
+    jib:~/eg/ruby/na_str > cat a.rb
+    #
+    # the nmap extension is installed along with na_str
+    #
+      require 'nmap'
+    #
+    # the NMap ctor interface is similar to NArray's, but a backing file must also
+    # be specified
+    #
+      path, x, y = 'int.data', 3, 4
+      nmap = NMap.int path, x, y 
+    #
+    # copy the last row to the first
+    #
+      nmap.na[true, 0] = nmap.na[true, 3]
+    #
+    # set the last row to be the current time.  if you run this a few times you'll
+    # notice that changes to the narray are automatically written to the to
+    # backing file via the magic of mmap
+    #
+      nmap.na[true, 3] = Time.now.to_i
+    #
+    # show the narray
+    #
+      p nmap.na
+  
+
+  jib:~/eg/ruby/na_str > ruby a.rb
+  NArray(ref).int(3,4):
+  [ [ 0, 0, 0 ],
+    [ 0, 0, 0 ],
+    [ 0, 0, 0 ],
+    [ 1151439012, 1151439012, 1151439012 ] ]
+
+  jib:~/eg/ruby/na_str > ruby a.rb
+  NArray(ref).int(3,4):
+  [ [ 1151439012, 1151439012, 1151439012 ],
+    [ 0, 0, 0 ],
+    [ 0, 0, 0 ],
+    [ 1151439014, 1151439014, 1151439014 ] ]
+
+
+SPEED
+
+  jib:~/eg/ruby/na_str > cat a.rb
+  #
+  # reference impl installed with na_str
+  #
+    require 'nmap'
+  #
+  # setup a narray grid containing 1 gb of ints
+  #
+    gb = 2 ** 30
+    mb = 2 ** 20
+    sizeof_int = [42].pack('i').size
+    gig_of_ints = gb / sizeof_int
+    nmap = NMap.int '1GB',  gig_of_ints
+  #
+  # set about 1 million of the ints to 42
+  #
+    nmap.na[0 .. mb] = 42
+  #
+  # show that the data was written
+  #
+    p nmap.na[mb - 1]
+
+
+  jib:~/eg/ruby/na_str > time ruby a.rb
+  42
+  
+  real    0m0.078s
+  user    0m0.020s
+  sys     0m0.020s
+
+
+  jib:~/eg/ruby/na_str > ls -ltar 1GB
+  -rw-rw-r--    1 ahoward  ahoward  1073741824 Jun 27 14:28 1GB
