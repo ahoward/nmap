@@ -156,7 +156,7 @@ end
       yield
     ensure
       if f
-        f.flock File::LOCK_UN rescue nil
+        f.flock(File::LOCK_UN) rescue nil
         f.close rescue nil
       end
     end
