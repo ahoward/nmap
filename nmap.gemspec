@@ -3,10 +3,10 @@
 
 Gem::Specification::new do |spec|
   spec.name = "nmap"
-  spec.version = "1.0.0"
+  spec.version = "1.1.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "nmap"
-  spec.description = "description: nmap kicks the ass"
+  spec.description = "narray + mmap = wicked fast persistent numerical arrays" 
 
   spec.files = ["extconf.rb", "gemspec.rb", "install.rb", "lib", "lib/nmap.rb", "na_str.c", "nmap.gemspec", "Rakefile", "README", "samples", "samples/a.rb", "samples/b.rb", "samples/b.rb.data", "samples/c.rb"]
   spec.executables = []
@@ -15,8 +15,8 @@ Gem::Specification::new do |spec|
 
   spec.has_rdoc = true
   spec.test_files = nil
-  #spec.add_dependency 'lib', '>= version'
-  spec.add_dependency 'fattr'
+  spec.add_dependency 'narray'
+  spec.add_dependency 'mmap'
 
   spec.extensions.push(*["extconf.rb"])
 

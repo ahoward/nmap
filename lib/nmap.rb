@@ -22,7 +22,7 @@ end
 # numerical grids
 #
   class NMap
-    def NMap.version() '1.0.0' end
+    def NMap.version() '1.1.0' end
 
     module Util
       def string_of(obj)

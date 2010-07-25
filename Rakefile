@@ -115,7 +115,7 @@ task :gemspec do
             spec.version = #{ version.inspect }
             spec.platform = Gem::Platform::RUBY
             spec.summary = #{ lib.inspect }
-            spec.description = #{ description.inspect }
+            spec.description = "narray + mmap = wicked fast persistent numerical arrays" 
 
             spec.files = #{ files.inspect }
             spec.executables = #{ executables.inspect }
@@ -124,8 +124,8 @@ task :gemspec do
 
             spec.has_rdoc = #{ has_rdoc.inspect }
             spec.test_files = #{ test_files.inspect }
-            #spec.add_dependency 'lib', '>= version'
-            spec.add_dependency 'fattr'
+            spec.add_dependency 'narray'
+            spec.add_dependency 'mmap'
 
             spec.extensions.push(*#{ extensions.inspect })
 
